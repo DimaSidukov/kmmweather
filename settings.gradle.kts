@@ -16,6 +16,3 @@ dependencyResolutionManagement {
 rootProject.name = "kmmweather"
 include(":androidApp")
 include(":shared")
-include(":data")
-include(":data")
-include(":domain")
