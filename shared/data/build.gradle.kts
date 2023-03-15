@@ -1,20 +1,16 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
+    kotlin("multiplatform")
+}
+
+kotlin {
+    android()
+    ios()
 }
 
 android {
     namespace = "com.example.data"
     compileSdk = 33
-
-    defaultConfig {
-        applicationId = "com.example.data"
-        minSdk = 24
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
     buildTypes {
         release {
