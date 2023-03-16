@@ -1,10 +1,11 @@
 package com.example.kmmweather.repositories
 
-import com.example.domain.entities.Weather
-import com.example.domain.sources.remote.WeatherSource
+import com.example.kmmweather.entities.Weather
+import com.example.weather.remote.RemoteWeatherSource
 
+// find a way to provide with an interface and make it compatible with Koin's injection
 class WeatherRepository(
-    private val remoteSource: WeatherSource
+    private val remoteSource: RemoteWeatherSource
 ) {
 
     suspend fun getForecastForToday(latitude: Double, longitude: Double): Weather {

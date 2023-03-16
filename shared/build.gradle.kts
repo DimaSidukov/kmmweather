@@ -30,10 +30,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
 
-                implementation(project(mapOf("path" to ":shared:domain")))
-                implementation(project(mapOf("path" to ":shared:data")))
-
-                implementation(project("data"))
+                implementation(project(":shared:domain"))
+                implementation(project(":shared:data"))
 
                 implementation("io.insert-koin:koin-core:$koinVersion")
 
@@ -82,7 +80,8 @@ android {
         targetSdk = 33
     }
 }
+
 dependencies {
-    implementation(project(mapOf("path" to ":shared:domain")))
-    implementation(project(mapOf("path" to ":shared:data")))
+    implementation(project(":shared:domain"))
+    implementation(project(":shared:data"))
 }

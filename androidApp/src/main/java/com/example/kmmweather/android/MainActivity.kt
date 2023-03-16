@@ -12,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.domain.entities.Weather
+import com.example.kmmweather.entities.Weather
 import com.example.kmmweather.repositories.WeatherRepository
 import org.koin.android.ext.android.inject
 
