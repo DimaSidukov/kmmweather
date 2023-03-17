@@ -18,8 +18,11 @@ class WeatherApi(private val httpClient: HttpClient) {
             host = BASE_URL
             parameters.append("latitude", latitude.toString())
             parameters.append("longitude", longitude.toString())
-            parameters.append("hourly", "temperature_2m, weathercode")
+            encodedParameters.append("hourly","temperature_2m,weathercode")
+            println(buildString())
         }
+    }.also {
+        println("RESPONSE: $it")
     }.body()
 
 }

@@ -47,6 +47,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.insert-koin:koin-android:$koinVersion")
+                implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
         val androidUnitTest by getting
@@ -58,6 +59,9 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             // iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+            }
         }
         val iosX64Test by getting
         val iosArm64Test by getting

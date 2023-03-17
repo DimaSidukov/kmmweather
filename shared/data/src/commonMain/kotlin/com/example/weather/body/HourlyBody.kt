@@ -9,6 +9,6 @@ data class HourlyBody(
     @SerialName("temperature_2m")
     override val temperatureList: List<Double>,
     override val time: List<String>,
-    @SerialName("weatherCode")
+    @SerialName("weathercode")
     override val weatherCodeList: List<Int>
 ) : Hourly

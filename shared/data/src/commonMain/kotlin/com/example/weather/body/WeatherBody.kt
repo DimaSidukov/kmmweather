@@ -1,7 +1,5 @@
 package com.example.weather.body
 
-import com.example.kmmweather.entities.Hourly
-import com.example.kmmweather.entities.HourlyUnits
 import com.example.kmmweather.entities.Weather
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,9 +9,9 @@ data class WeatherBody(
     override val elevation: Double,
     @SerialName("generationtime_ms")
     override val generationTimeMs: Double,
-    override val hourly: Hourly,
+    override val hourly: HourlyBody,
     @SerialName("hourly_units")
-    override val hourlyUnits: HourlyUnits,
+    override val hourlyUnits: HourlyUnitsBody,
     override val latitude: Double,
     override val longitude: Double,
     override val timezone: String,

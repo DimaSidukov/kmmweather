@@ -43,14 +43,17 @@ dependencies {
     implementation(project(mapOf("path" to ":shared:data")))
     implementation(project(mapOf("path" to ":shared:domain")))
 
-    implementation("androidx.compose.ui:ui:1.3.1")
-    implementation("androidx.compose.ui:ui-tooling:1.3.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.1")
+    implementation("androidx.compose.ui:ui:1.3.3")
+    implementation("androidx.compose.ui:ui-tooling:1.3.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.3")
     implementation("androidx.compose.foundation:foundation:1.3.1")
     implementation("androidx.compose.material:material:1.3.1")
     implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.navigation:navigation-compose:2.6.0-alpha07")
 
-    implementation("io.insert-koin:koin-core:3.2.0")
-    implementation("io.insert-koin:koin-android:3.2.0")
+    implementation("io.insert-koin:koin-core:3.3.3")
+    implementation("io.insert-koin:koin-android:3.3.3")
+
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.29.2-rc")
 
 }
