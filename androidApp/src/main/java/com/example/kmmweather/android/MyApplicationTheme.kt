@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val darkPurple = Color(0xFF431098)
+val darkPurple2 = Color(0xFF622FB5)
 val lightPurple = Color(0xFF7F4CD2)
 val unselectedNavigationItemColor = Color(0x33FFFFFF)
 

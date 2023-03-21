@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kmmweather.android.R
 import com.example.kmmweather.android.darkPurple
+import com.example.kmmweather.android.darkPurple2
 import kotlin.math.roundToInt
 
 // guide to MVI architecture: https://blog.mindorks.com/mvi-architecture-android-tutorial-for-beginners-step-by-step-guide/
@@ -59,7 +60,6 @@ fun HomeScreen() {
             alpha = alpha,
             swipeableState = swipeableState
         )
-
     }
 }
 
@@ -224,8 +224,11 @@ fun ForecastOverview(
                 contentDescription = null,
             )
             LazyRow(
-                modifier = Modifier.padding(top = 24.dp, start = 20.dp),
+                modifier = Modifier.padding(top = 24.dp),
             ) {
+                item {
+                    Spacer(modifier = Modifier.width(20.dp))
+                }
                 items(
                     count = 2
                 ) { idx ->
@@ -235,7 +238,10 @@ fun ForecastOverview(
                             .clip(RoundedCornerShape(22.dp))
                     ) {
                         Image(
-                            painter = painterResource(id = if (idx % 2 == 0) R.drawable.bg_sun_location else R.drawable.bg_snow_mountains),
+                            painter = painterResource(
+                                if (idx % 2 == 0) R.drawable.bg_sun_location
+                                else R.drawable.bg_snow_mountains
+                            ),
                             contentDescription = null
                         )
                         Text(
@@ -243,11 +249,69 @@ fun ForecastOverview(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
-                            modifier = Modifier.padding(top = 24.dp, start = 20.dp, end = 20.dp),
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .padding(
+                                    top = 24.dp,
+                                    start = 20.dp,
+                                    end = 20.dp
+                                ),
                             textAlign = TextAlign.Center
                         )
                     }
                     Spacer(modifier = Modifier.width(44.dp))
+                }
+            }
+            Text(
+                text = "Today",
+                modifier = Modifier.padding(top = 10.dp, start = 20.dp),
+                fontWeight = FontWeight.Medium,
+                color = Color.White,
+                fontSize = 20.sp
+            )
+            // https://stackoverflow.com/questions/65065285/jetpack-compose-lazycolumn-programmatically-scroll-to-item
+            LazyRow(
+                modifier = Modifier.padding(top = 6.dp)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.padding(start = 20.dp))
+                }
+                items(
+                    count = 4
+                ) { idx ->
+                    Box(
+                        modifier = Modifier
+                            .size(76.dp)
+                            .clip(
+                                RoundedCornerShape(16.dp)
+                            )
+                            .background(darkPurple2)
+                    ) {
+                        Image(
+                            painter = painterResource(
+                                when (idx) {
+                                    3 -> R.drawable.ic_drizzle
+                                    2 -> R.drawable.ic_heavy_rain
+                                    else -> R.drawable.ic_sun_behind_cloud
+                                }
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .align(Alignment.TopCenter)
+                        )
+                        Text(
+                            text = if (idx == 0) "Now" else "$idx:00PM",
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 15.sp,
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .align(Alignment.BottomCenter),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(21.dp))
                 }
             }
         }
