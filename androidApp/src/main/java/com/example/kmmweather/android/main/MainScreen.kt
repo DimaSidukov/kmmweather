@@ -2,6 +2,7 @@ package com.example.kmmweather.android.main
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -9,8 +10,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -41,6 +44,11 @@ fun BottomNavigationBar(navController: NavController) {
         modifier = Modifier.windowInsetsPadding(
             WindowInsets.systemBars.only(
                 WindowInsetsSides.Bottom
+            )
+        ).clip(
+            RoundedCornerShape(
+                topStart = 10.dp,
+                topEnd = 10.dp
             )
         ),
         backgroundColor = lightPurple,
