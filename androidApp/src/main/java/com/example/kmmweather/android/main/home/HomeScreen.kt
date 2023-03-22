@@ -14,13 +14,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,14 +48,14 @@ fun HomeScreen() {
             derivedStateOf { 1f - (swipeableState.offset.value / screenHeight.value) }
         }
 
-        HomeScreenBackground()
+        HomeScreenBackground(alpha, screenHeight.value)
         TopAppBar()
 
-        ForecastOverview(
-            alpha = alpha,
-            swipeableState = swipeableState
-        )
         ForecastDetails(
+            alpha = 1f - alpha,
+            topPadding = screenHeight / 2
+        )
+        ForecastOverview(
             alpha = alpha,
             swipeableState = swipeableState
         )
@@ -64,33 +63,28 @@ fun HomeScreen() {
 }
 
 @Composable
-fun HomeScreenBackground() {
+fun HomeScreenBackground(alpha: Float, screenHeight: Float) {
     Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        var imageHeight by remember { mutableStateOf(0) }
-        val density = LocalDensity.current.density
-
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(top = if ((imageHeight / density).dp >= 20.dp) ((imageHeight / density).dp - 60.dp) else 0.dp)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color(0xFF311C7F),
-                            darkPurple
-                        )
-                    )
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color(0xFF311C7F),
+                        darkPurple
+                    ),
+                    startY = screenHeight / 2
                 )
+            )
+    ) {
+        Image(
+            modifier = Modifier.alpha(alpha),
+            painter = painterResource(id = R.drawable.bg_night_1),
+            contentDescription = null
         )
         Image(
-            modifier = Modifier.onGloballyPositioned {
-                imageHeight = it.size.height
-            },
-            painter = painterResource(id = R.drawable.bg_night_1),
+            modifier = Modifier.alpha(1f - alpha),
+            painter = painterResource(id = R.drawable.bg_night_2),
             contentDescription = null
         )
     }
@@ -142,8 +136,7 @@ fun TopAppBar(
 fun ForecastOverview(
     alpha: Float,
     swipeableState: SwipeableState<SwipeState>,
-
-    ) {
+) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -318,12 +311,57 @@ fun ForecastOverview(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ForecastDetails(
     alpha: Float,
-    swipeableState: SwipeableState<SwipeState>
+    topPadding: Dp
 ) {
 
+    val yOffset = (1f - when {
+        alpha > 1f -> 1f
+        alpha < 0f -> 0f
+        else -> alpha
+    }) * topPadding.value
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = topPadding - 50.dp)
+            .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+            .offset(y = yOffset.dp)
+            .alpha(alpha)
+            .background(
+                darkPurple
+            )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 41.dp, start = 22.dp, end = 22.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "8°C",
+                fontSize = 72.sp,
+                color = Color.White,
+                fontWeight = FontWeight.SemiBold
+            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_sun),
+                    contentDescription = null
+                )
+                Text(
+                    text = "Clear sky",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
 
 }
