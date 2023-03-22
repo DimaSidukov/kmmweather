@@ -1,5 +1,6 @@
 package com.example.kmmweather.android.main.home
 
+import android.net.ConnectivityManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -15,10 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -36,16 +37,21 @@ enum class SwipeState {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-@Preview
 @Composable
-fun HomeScreen() {
-    Box {
+fun HomeScreen(viewModel: HomeViewModel) {
 
-        val swipeableState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
+    val connectivityManager = LocalContext.current.getSystemService(ConnectivityManager::class.java)
+
+    LaunchedEffect(Unit) {
+        viewModel.requestData(connectivityManager)
+    }
+
+    Box {
+        val swipeState = rememberSwipeableState(initialValue = SwipeState.COLLAPSED)
         val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
         val alpha by remember {
-            derivedStateOf { 1f - (swipeableState.offset.value / screenHeight.value) }
+            derivedStateOf { 1f - (swipeState.offset.value / screenHeight.value) }
         }
 
         HomeScreenBackground(alpha, screenHeight.value)
@@ -57,7 +63,7 @@ fun HomeScreen() {
         )
         ForecastOverview(
             alpha = alpha,
-            swipeableState = swipeableState
+            swipeState = swipeState
         )
     }
 }
@@ -135,7 +141,7 @@ fun TopAppBar(
 @Composable
 fun ForecastOverview(
     alpha: Float,
-    swipeableState: SwipeableState<SwipeState>,
+    swipeState: SwipeableState<SwipeState>,
 ) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -144,7 +150,7 @@ fun ForecastOverview(
         modifier = Modifier
             .fillMaxHeight()
             .swipeable(
-                state = swipeableState,
+                state = swipeState,
                 orientation = Orientation.Vertical,
                 anchors = mapOf(
                     0f to SwipeState.COLLAPSED,
@@ -154,7 +160,7 @@ fun ForecastOverview(
             .offset {
                 IntOffset(
                     x = 0,
-                    y = swipeableState.offset.value.roundToInt()
+                    y = swipeState.offset.value.roundToInt()
                 )
             }
             .alpha(alpha),
