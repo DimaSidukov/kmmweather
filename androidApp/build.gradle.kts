@@ -55,5 +55,6 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.3.3")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.29.2-rc")
+    implementation("androidx.core:core-ktx:+")
 
 }

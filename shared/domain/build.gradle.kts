@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
+    id("org.jetbrains.kotlin.android")
 }
 
 kotlin {
@@ -25,4 +26,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+dependencies {
+    implementation("androidx.core:core-ktx:+")
 }

@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "1.8.10"
+    id("org.jetbrains.kotlin.android")
 }
 
 kotlin {
@@ -38,6 +39,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+                implementation("com.russhwolf:multiplatform-settings:1.0.0")
             }
         }
         val commonTest by getting {
@@ -88,4 +91,6 @@ android {
 dependencies {
     implementation(project(":shared:domain"))
     implementation(project(":shared:data"))
+    implementation("androidx.core:core-ktx:+")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
 }

@@ -23,7 +23,7 @@ sealed class BottomNavigationItem(val label: String, val icon: Int, val screenRo
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavigationItem.Home.screenRoute) {
         composable(BottomNavigationItem.Home.screenRoute) {
-            HomeScreen()
+            HomeScreen(getViewModel())
         }
         composable(BottomNavigationItem.Search.screenRoute) {
             SearchScreen()

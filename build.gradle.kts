@@ -1,6 +1,11 @@
 buildscript {
+    val kotlin_version by extra("1.8.20-RC")
     dependencies {
         classpath("com.android.tools.build:gradle:7.4.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+    }
+    repositories {
+        mavenCentral()
     }
 }
 plugins {
