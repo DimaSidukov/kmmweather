@@ -2,15 +2,17 @@ import SwiftUI
 import shared
 
 struct ContentView: View {
-	let greet = Greeting().greet()
-
+    
+    
+    let daz: DomainWeather = InjectionHelper().weatherRepository.getForecastForToday(
+        latitude: 32,
+        longitude: 42
+    ) { data, error in
+        return data
+    }
+    
+    
 	var body: some View {
-		Text(greet)
-	}
-}
-
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
+		Text(foundData)
 	}
 }

@@ -23,14 +23,14 @@ class HomeViewModel(
         latitude: Double? = null,
         longitude: Double? = null
     ) {
-        if (firstLaunch)
-
-        if (latitude == null && longitude == null) {
-            state.value = HomeViewState.RequestLocation
-        }
-        if (!isNetworkConnected(connectivityManager)) {
-            repository.getForecastForToday()
-        }
+//        if (firstLaunch)
+//
+//        if (latitude == null && longitude == null) {
+//            state.value = HomeViewState.RequestLocation
+//        }
+//        if (!isNetworkConnected(connectivityManager)) {
+//            repository.getForecastForToday()
+//        }
     }
 
     private fun isNetworkConnected(connectivityManager: ConnectivityManager): Boolean {
