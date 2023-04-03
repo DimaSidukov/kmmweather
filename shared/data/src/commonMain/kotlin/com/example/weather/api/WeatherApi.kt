@@ -12,17 +12,17 @@ class WeatherApi(private val httpClient: HttpClient) {
         private const val BASE_URL = "api.open-meteo.com/v1/forecast"
     }
 
-    suspend fun forecastForToday(latitude: Double, longitude: Double): WeatherBody = httpClient.get {
-        url {
-            protocol = URLProtocol.HTTPS
-            host = BASE_URL
-            parameters.append("latitude", latitude.toString())
-            parameters.append("longitude", longitude.toString())
-            encodedParameters.append("hourly","temperature_2m,weathercode")
-            println(buildString())
-        }
-    }.also {
-        println("RESPONSE: $it")
-    }.body()
+    suspend fun forecastForToday(latitude: Double, longitude: Double): WeatherBody =
+        httpClient.get {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = BASE_URL
+                parameters.append("latitude", latitude.toString())
+                parameters.append("longitude", longitude.toString())
+                encodedParameters.append("hourly", "temperature_2m,weathercode")
+                parameters.append("forecast_days", "1")
+                println(buildString())
+            }
+        }.body()
 
 }

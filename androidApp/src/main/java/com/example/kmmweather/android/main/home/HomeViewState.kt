@@ -1,14 +1,16 @@
 package com.example.kmmweather.android.main.home
 
+import com.example.kmmweather.ui.Forecast as UiForecast
+
 sealed class HomeViewState {
 
-    object NoData: HomeViewState()
+    object NoData : HomeViewState()
 
-    object NoInternetConnection: HomeViewState()
+    object NoInternetConnection : HomeViewState()
 
-    object RequestLocation: HomeViewState()
+    object RequestLocation : HomeViewState()
 
     // list of something
-    object Forecast: HomeViewState()
+    class Forecast(val forecast: UiForecast) : HomeViewState()
 
 }

@@ -5,6 +5,7 @@ import com.example.weather.api.WeatherApi
 import com.example.weather.remote.RemoteWeatherSource
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import com.example.weather.local.AppSettings
 import org.koin.dsl.module
 
 val apiModule = module {
@@ -25,9 +26,14 @@ val httpClientModule = module {
     }
 }
 
+val settingsModule = module {
+    singleOf(::AppSettings)
+}
+
 fun appModule() = listOf(
     apiModule,
     weatherSourceModule,
     weatherRepository,
-    httpClientModule
+    httpClientModule,
+    settingsModule
 )

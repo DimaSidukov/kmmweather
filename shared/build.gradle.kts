@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("com.squareup.sqldelight")
     kotlin("multiplatform")
     kotlin("plugin.serialization") version "1.8.10"
 }
@@ -25,6 +26,7 @@ kotlin {
 
     val koinVersion = "3.2.0"
     val ktorVersion = "2.2.1"
+    val sqlDelightVersion = "1.5.5"
 
     sourceSets {
         val commonMain by getting {
@@ -33,14 +35,20 @@ kotlin {
                 implementation(project(":shared:domain"))
                 implementation(project(":shared:data"))
 
+                // Koin
                 implementation("io.insert-koin:koin-core:$koinVersion")
 
+                // Ktor
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 
-                implementation("com.russhwolf:multiplatform-settings:1.0.0")
+                // Settings
+                implementation("com.russhwolf:multiplatform-settings-no-arg:1.0.0")
+
+                // SqlDelight
+                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
             }
         }
         val commonTest by getting {
@@ -52,6 +60,7 @@ kotlin {
                 implementation("io.insert-koin:koin-android:$koinVersion")
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
             }
         }
         val androidUnitTest by getting
@@ -65,6 +74,7 @@ kotlin {
             iosSimulatorArm64Main.dependsOn(this)
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
             }
         }
         val iosX64Test by getting
@@ -94,4 +104,10 @@ dependencies {
     implementation(project(":shared:data"))
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+}
+
+sqldelight {
+    database("AppDatabase") {
+        packageName = "comt.example.weather.shared.local"
+    }
 }

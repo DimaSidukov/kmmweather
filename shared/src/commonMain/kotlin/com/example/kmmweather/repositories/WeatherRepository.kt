@@ -1,6 +1,7 @@
 package com.example.kmmweather.repositories
 
 import com.example.kmmweather.entities.Weather
+import com.example.kmmweather.ui.Forecast
 import com.example.weather.remote.RemoteWeatherSource
 
 // find a way to provide with an interface and make it compatible with Koin's injection

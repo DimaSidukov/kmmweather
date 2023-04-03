@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class HourlyUnitsBody(
     @SerialName("temperature_2m")
     override val temperature: String,
+    @SerialName("time")
     override val time: String,
     @SerialName("weathercode")
     override val weatherCode: String

@@ -1,5 +1,6 @@
 package com.example.kmmweather.android.main.home
 
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,10 +28,11 @@ import androidx.compose.ui.unit.sp
 import com.example.kmmweather.android.R
 import com.example.kmmweather.android.darkPurple
 import com.example.kmmweather.android.darkPurple2
+import com.example.kmmweather.ui.Forecast
+import java.util.*
 import kotlin.math.roundToInt
 
 // guide to MVI architecture: https://blog.mindorks.com/mvi-architecture-android-tutorial-for-beginners-step-by-step-guide/
-
 
 enum class SwipeState {
     COLLAPSED, EXPANDED
@@ -41,9 +43,33 @@ enum class SwipeState {
 fun HomeScreen(viewModel: HomeViewModel) {
 
     val connectivityManager = LocalContext.current.getSystemService(ConnectivityManager::class.java)
+    val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.requestData(connectivityManager)
+        viewModel.requestData(
+            connectivityManager,
+            Geocoder(context, Locale.getDefault()),
+            56.633331,
+            47.866669
+        )
+    }
+
+    var forecast by remember {
+        mutableStateOf<Forecast?>(null)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.state.collect {
+            when (it) {
+                is HomeViewState.Forecast -> {
+                    forecast = it.forecast
+                }
+                else -> {
+
+                }
+            }
+        }
     }
 
     Box {
@@ -59,11 +85,14 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
         ForecastDetails(
             alpha = 1f - alpha,
-            topPadding = screenHeight / 2
+            topPadding = screenHeight / 2,
+            forecast = forecast
         )
         ForecastOverview(
             alpha = alpha,
-            swipeState = swipeState
+            swipeState = swipeState,
+            forecast = forecast,
+            currentHour = currentHour
         )
     }
 }
@@ -142,6 +171,8 @@ fun TopAppBar(
 fun ForecastOverview(
     alpha: Float,
     swipeState: SwipeableState<SwipeState>,
+    forecast: Forecast?,
+    currentHour: Int
 ) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -174,13 +205,13 @@ fun ForecastOverview(
         ) {
             Column {
                 Text(
-                    text = "Pekin".uppercase(),
+                    text = "Yoshkar-Ola".uppercase(),
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 28.sp,
                 )
                 Text(
-                    text = "7 Nov 2022 Lun  20°C/29°C",
+                    text = forecast?.dateTemperatureRange ?: "",
                     color = Color.White,
                     fontWeight = FontWeight.Normal,
                     fontSize = 13.sp,
@@ -191,13 +222,13 @@ fun ForecastOverview(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "24°C",
+                    text = "${forecast?.currentHourTemperature}°C",
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 36.sp
                 )
                 Text(
-                    text = "Clear",
+                    text = forecast?.weatherDescription ?: "",
                     color = Color.White,
                     fontWeight = FontWeight.Normal,
                     fontSize = 21.sp
@@ -276,7 +307,7 @@ fun ForecastOverview(
                     Spacer(modifier = Modifier.padding(start = 20.dp))
                 }
                 items(
-                    count = 4
+                    count = forecast?.dayTemperatureList?.size ?: 0
                 ) { idx ->
                     Box(
                         modifier = Modifier
@@ -286,21 +317,21 @@ fun ForecastOverview(
                             )
                             .background(darkPurple2)
                     ) {
-                        Image(
-                            painter = painterResource(
-                                when (idx) {
-                                    3 -> R.drawable.ic_drizzle
-                                    2 -> R.drawable.ic_heavy_rain
-                                    else -> R.drawable.ic_sun_behind_cloud
-                                }
-                            ),
-                            contentDescription = null,
+                        Text(
                             modifier = Modifier
-                                .padding(top = 10.dp)
+                                .size(40.dp)
                                 .align(Alignment.TopCenter)
+                                .padding(top = 10.dp)
+                                .clip(RoundedCornerShape(50))
+                                .background(Color.White)
+                                .padding(5.dp),
+                            text = "${
+                                forecast?.dayTemperatureList?.get(idx)
+                            }°C",
+                            color = Color.Black
                         )
                         Text(
-                            text = if (idx == 0) "Now" else "$idx:00PM",
+                            text = if (idx == currentHour) "Now" else "$idx:00",
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp,
@@ -320,7 +351,8 @@ fun ForecastOverview(
 @Composable
 fun ForecastDetails(
     alpha: Float,
-    topPadding: Dp
+    topPadding: Dp,
+    forecast: Forecast?
 ) {
 
     val yOffset = (1f - when {
@@ -348,26 +380,26 @@ fun ForecastDetails(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "8°C",
+                text = "${forecast?.currentHourTemperature}°C",
                 fontSize = 72.sp,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_sun),
                     contentDescription = null
                 )
                 Text(
-                    text = "Clear sky",
+                    text = forecast?.weatherDescription ?: "",
                     fontSize = 24.sp,
                     color = Color.White,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
                 )
             }
         }
     }
-
 }
