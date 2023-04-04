@@ -10,7 +10,6 @@ sealed class HomeViewState {
 
     object RequestLocation : HomeViewState()
 
-    // list of something
     class Forecast(val forecast: UiForecast) : HomeViewState()
 
 }

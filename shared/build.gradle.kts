@@ -108,6 +108,6 @@ dependencies {
 
 sqldelight {
     database("AppDatabase") {
-        packageName = "comt.example.weather.shared.local"
+        packageName = "com.example.weather.shared.local"
     }
 }

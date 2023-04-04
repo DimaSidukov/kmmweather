@@ -32,20 +32,22 @@ class HomeViewModel(
     ) {
         viewModelScope.launch {
             val data = repository.getForecastForToday(latitude!!, longitude!!)
-            val address = geocoder.getFromLocation(latitude, longitude, 1)
-                ?.get(0)?.getAddressLine(0) ?: ""
-            val date = SimpleDateFormat(
-                "d MMM yyyy EEE",
-                Locale.getDefault()
-            ).format(Calendar.getInstance().time)
-            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val address = geocoder
+                .getFromLocation(latitude, longitude, 1)
+                ?.get(0)
+                ?.getAddressLine(0) ?: ""
+            val date = SimpleDateFormat("d MMM yyyy EEE", Locale.getDefault())
+                .format(Calendar.getInstance().time)
+            val currentHour = Calendar
+                .getInstance()
+                .get(Calendar.HOUR_OF_DAY)
             state.emit(
                 HomeViewState.Forecast(
                     Forecast(
                         address = address,
-                        dateTemperatureRange = "$date ${
-                            data.hourly.temperatureList.min().roundToInt()
-                        }°C/${data.hourly.temperatureList.max().roundToInt()}°C",
+                        dateTemperatureRange = "$date " +
+                                "${data.hourly.temperatureList.min().roundToInt()}°C/" +
+                                "${data.hourly.temperatureList.max().roundToInt()}°C",
                         currentHourTemperature = data.hourly.temperatureList[currentHour].roundToInt(),
                         weatherDescription = data.hourly.weatherCodeList[currentHour].wmoToString(),
                         dayTemperatureList = data.hourly.temperatureList.map { t -> t.roundToInt() }
