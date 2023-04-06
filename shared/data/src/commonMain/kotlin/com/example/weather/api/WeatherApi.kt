@@ -13,15 +13,15 @@ class WeatherApi(private val httpClient: HttpClient) {
     }
 
     suspend fun forecastForToday(latitude: Double, longitude: Double): WeatherBody =
-        httpClient.get {
+        httpClient.get(BASE_URL) {
             url {
                 protocol = URLProtocol.HTTPS
-                host = BASE_URL
+                // host = BASE_URL
                 parameters.append("latitude", latitude.toString())
                 parameters.append("longitude", longitude.toString())
                 encodedParameters.append("hourly", "temperature_2m,weathercode")
                 parameters.append("forecast_days", "1")
-                println(buildString())
+                println("STRING " + buildString())
             }
         }.body()
 

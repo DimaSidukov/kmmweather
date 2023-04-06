@@ -11,6 +11,13 @@ import shared
 
 struct HomeView: View {
     
+    @StateObject private var viewModel = HomeViewModel()
+    @State private var address: String = ""
+    @State private var dateTemperatureRange = ""
+    @State private var currentHourTemperature = Int32(0)
+    @State private var weatherDescription = ""
+    @State private var dayTemperatureList = [KotlinInt(0)]
+    
     var bgColor = Color(
         red: 67 / 255,
         green: 16 / 255,
@@ -40,6 +47,10 @@ struct HomeView: View {
         )
     ]
     
+    init() {
+        viewModel.requestLocation(lat: 42, lon: 30)
+    }
+    
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -68,18 +79,18 @@ struct HomeView: View {
                 }.padding(.top, 30)
                 HStack(alignment: .center) {
                     VStack(alignment: .leading) {
-                        Text("Pekin".uppercased())
+                        Text(address.uppercased())
                             .font(.system(size: 28))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
-                        Text("7 Nov 2022 Lun  20°C/29°C")
+                        Text(dateTemperatureRange)
                             .font(.system(size: 13))
                             .fontWeight(.regular)
                             .foregroundColor(.white)
                     }.padding(.leading, 20)
                     Spacer()
                     VStack(alignment: .trailing) {
-                        Text("24°C")
+                        Text("\(currentHourTemperature)°C")
                             .font(.system(size: 36))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -116,9 +127,9 @@ struct HomeView: View {
                 Spacer()
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 0) {
-                        ForEach(0...23, id: \.self) { idx in
+                        ForEach(0...dayTemperatureList.count - 1, id: \.self) { idx in
                             VStack(spacing: 0) {
-                                Text("30°C")
+                                Text("\(dayTemperatureList[idx])°C")
                                     .padding(5)
                                     .background(Color.white)
                                     .clipShape(Capsule())
@@ -139,6 +150,12 @@ struct HomeView: View {
                 }
                 Spacer()
             }
+        }.onAppear() {
+            address = viewModel.currentCityForecast.address
+            dateTemperatureRange = viewModel.currentCityForecast.dateTemperatureRange
+            currentHourTemperature = viewModel.currentCityForecast.currentHourTemperature
+            weatherDescription = viewModel.currentCityForecast.weatherDescription
+            dayTemperatureList = viewModel.currentCityForecast.dayTemperatureList
         }
     }
 }
