@@ -22,16 +22,20 @@ class LocalWeatherSource(databaseDriverFactory: DatabaseDriverFactory) : Databas
         )
     }
 
-    override suspend fun getForecast(latitude: Double, longitude: Double): Forecast {
-        val forecast = dbQuery.selectForecastByLocation(latitude, longitude).executeAsOne()
-        return ForecastBody(
-            forecast.latitude,
-            forecast.longitude,
-            forecast.address,
-            forecast.dateTemperatureRange,
-            forecast.currentHourTemperature,
-            forecast.weatherDescription,
-            forecast.dayTemperatureString
-        )
+    override suspend fun getForecast(latitude: Double, longitude: Double): Forecast? {
+        return try {
+            val forecastQuery = dbQuery.selectForecastByLocation(latitude, longitude).executeAsOne()
+            ForecastBody(
+                forecastQuery.latitude,
+                forecastQuery.longitude,
+                forecastQuery.address,
+                forecastQuery.dateTemperatureRange,
+                forecastQuery.currentHourTemperature,
+                forecastQuery.weatherDescription,
+                forecastQuery.dayTemperatureString
+            )
+        } catch (e: Exception) {
+            null
+        }
     }
 }

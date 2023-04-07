@@ -20,10 +20,12 @@ class WeatherRepository(
         localSource.insertForecast(forecast)
     }
 
-    suspend fun getForecastForToday(latitude: Double, longitude: Double): Forecast {
-        val remoteForecast = getRemoteForecast(latitude, longitude)
-//        val localForecast = localSource.getForecast(latitude, longitude)
-        return remoteForecast
+    suspend fun getForecastForToday(latitude: Double, longitude: Double, isRemote: Boolean): Forecast? {
+        return if (isRemote) {
+            getRemoteForecast(latitude, longitude)
+        } else {
+            localSource.getForecast(latitude, longitude)
+        }
     }
 
     private suspend fun getRemoteForecast(latitude: Double, longitude: Double) : Forecast {

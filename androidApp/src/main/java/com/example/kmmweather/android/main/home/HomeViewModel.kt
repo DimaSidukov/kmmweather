@@ -27,16 +27,18 @@ class HomeViewModel(
         longitude: Double? = null
     ) {
         viewModelScope.launch {
-            val forecast = repository.getForecastForToday(latitude!!, longitude!!)
-            val address = geocoder
-                .getFromLocation(latitude, longitude, 1)
-                ?.get(0)
-                ?.getAddressLine(0) ?: ""
-            forecast.address = address
-            repository.addForecast(forecast)
-            state.emit(
-                HomeViewState.Forecast(forecast)
-            )
+            val forecast = repository.getForecastForToday(latitude!!, longitude!!, isNetworkConnected(connectivityManager))
+            forecast?.let {
+                val address = geocoder
+                    .getFromLocation(latitude, longitude, 1)
+                    ?.get(0)
+                    ?.getAddressLine(0) ?: ""
+                forecast.address = address
+                repository.addForecast(forecast)
+                state.emit(
+                    HomeViewState.Forecast(forecast)
+                )
+            }
         }
     }
 
