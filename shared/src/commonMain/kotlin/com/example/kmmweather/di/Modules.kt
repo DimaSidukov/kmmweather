@@ -2,26 +2,37 @@ package com.example.kmmweather.di
 
 import com.example.kmmweather.repositories.WeatherRepository
 import com.example.weather.api.WeatherApi
-import com.example.weather.remote.RemoteWeatherSource
-import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.singleOf
 import com.example.weather.local.AppSettings
+import com.example.weather.local.LocalWeatherSource
+import com.example.weather.local.buildDatabaseDriveFactory
+import com.example.weather.remote.RemoteWeatherSource
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val apiModule = module {
     factoryOf(::WeatherApi)
 }
 
-val weatherSourceModule = module {
+val remoteWeatherSourceModule = module {
     singleOf(::RemoteWeatherSource)
 }
 
+val localWeatherSourceModule = module {
+    singleOf(::LocalWeatherSource)
+}
+
+val dbDriverModule = module {
+    factory {
+        buildDatabaseDriveFactory()
+    }
+}
+
 val weatherRepository = module {
-    single { WeatherRepository(get()) }
+    single { WeatherRepository(get(), get()) }
 }
 
 val httpClientModule = module {
@@ -36,8 +47,10 @@ val settingsModule = module {
 
 fun appModule() = listOf(
     apiModule,
-    weatherSourceModule,
+    remoteWeatherSourceModule,
+    localWeatherSourceModule,
     weatherRepository,
     httpClientModule,
-    settingsModule
+    settingsModule,
+    dbDriverModule
 )

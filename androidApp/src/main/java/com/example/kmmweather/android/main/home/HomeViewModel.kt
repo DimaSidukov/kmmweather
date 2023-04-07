@@ -5,13 +5,9 @@ import android.net.ConnectivityManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kmmweather.repositories.WeatherRepository
-import com.example.kmmweather.ui.Forecast
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.roundToInt
 
 class HomeViewModel(
     private val repository: WeatherRepository
@@ -31,28 +27,15 @@ class HomeViewModel(
         longitude: Double? = null
     ) {
         viewModelScope.launch {
-            val data = repository.getForecastForToday(latitude!!, longitude!!)
+            val forecast = repository.getForecastForToday(latitude!!, longitude!!)
             val address = geocoder
                 .getFromLocation(latitude, longitude, 1)
                 ?.get(0)
                 ?.getAddressLine(0) ?: ""
-            val date = SimpleDateFormat("d MMM yyyy EEE", Locale.getDefault())
-                .format(Calendar.getInstance().time)
-            val currentHour = Calendar
-                .getInstance()
-                .get(Calendar.HOUR_OF_DAY)
+            forecast.address = address
+            repository.addForecast(forecast)
             state.emit(
-                HomeViewState.Forecast(
-                    Forecast(
-                        address = address,
-                        dateTemperatureRange = "$date " +
-                                "${data.hourly.temperatureList.min().roundToInt()}°C/" +
-                                "${data.hourly.temperatureList.max().roundToInt()}°C",
-                        currentHourTemperature = data.hourly.temperatureList[currentHour].roundToInt(),
-                        weatherDescription = data.hourly.weatherCodeList[currentHour].wmoToString(),
-                        dayTemperatureList = data.hourly.temperatureList.map { t -> t.roundToInt() }
-                    )
-                )
+                HomeViewState.Forecast(forecast)
             )
         }
     }

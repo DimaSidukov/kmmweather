@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
+    id("com.squareup.sqldelight")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
@@ -8,10 +9,11 @@ kotlin {
     android()
     ios()
 
+    val ktorVersion = "2.2.1"
+    val sqlDelightVersion = "1.5.5"
+
     sourceSets["commonMain"].dependencies {
         implementation(project(mapOf("path" to ":shared:domain")))
-
-        val ktorVersion = "2.2.1"
 
         // Ktor
         implementation("io.ktor:ktor-client-core:$ktorVersion")
@@ -20,6 +22,18 @@ kotlin {
 
         // Settings
         implementation("com.russhwolf:multiplatform-settings-no-arg:1.0.0")
+
+        // SqlDelight
+        implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
+    }
+
+    sourceSets["androidMain"].dependencies {
+        // SqlDelight
+        implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+    }
+
+    sourceSets["iosMain"].dependencies {
+        implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
     }
 }
 
@@ -50,4 +64,11 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+}
+
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.example.weather.cache"
+        sourceFolders = listOf("sqldelight")
+    }
 }

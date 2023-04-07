@@ -1,6 +1,6 @@
 package com.example.kmmweather.android.main.home
 
-import com.example.kmmweather.ui.Forecast as UiForecast
+import com.example.kmmweather.entities.Forecast as UiForecast
 
 sealed class HomeViewState {
 
