@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.kmmweather.android.R
 import com.example.kmmweather.android.darkPurple
 import com.example.kmmweather.android.darkPurple2
-import com.example.kmmweather.ui.Forecast
+import com.example.kmmweather.entities.Forecast
 import java.util.*
 
 @Composable
@@ -38,7 +38,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
     val uiState = viewModel.state.collectAsState()
 
-    LaunchedEffect(uiState.value) {
+    LaunchedEffect(Unit) {
         viewModel.requestData(
             connectivityManager,
             Geocoder(context, Locale.getDefault()),

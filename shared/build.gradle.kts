@@ -49,6 +49,9 @@ kotlin {
 
                 // SqlDelight
                 implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
+
+                // KotlinX datetime
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
             }
         }
         val commonTest by getting {
