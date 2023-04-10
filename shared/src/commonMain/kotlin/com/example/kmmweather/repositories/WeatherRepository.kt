@@ -1,7 +1,8 @@
 package com.example.kmmweather.repositories
 
 import com.example.kmmweather.entities.Forecast
-import com.example.kmmweather.utils.format
+import com.example.kmmweather.utils.Geocoder
+import com.example.kmmweather.utils.formatCurrentTime
 import com.example.kmmweather.utils.wrapToAny
 import com.example.weather.body.ForecastBody
 import com.example.weather.local.LocalWeatherSource
@@ -34,15 +35,13 @@ class WeatherRepository(
     }
 
     private suspend fun getRemoteForecast(latitude: Double, longitude: Double): Forecast {
-        val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-            .format("d MMM yyyy EEE")
         val currentHour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
         val weather = remoteSource.getWeatherForToday(latitude, longitude)
         val forecast = ForecastBody(
             latitude = latitude,
             longitude = longitude,
-            address = "",
-            dateTemperatureRange = "$date " +
+            address = Geocoder.decodeLocation(latitude, longitude),
+            dateTemperatureRange = "${formatCurrentTime("d MMM yyyy EEE")} " +
                     "${weather.hourly.temperatureList.min().roundToInt()}°C/" +
                     "${weather.hourly.temperatureList.max().roundToInt()}°C",
             currentHourTemperature = weather.hourly.temperatureList[currentHour].roundToInt(),

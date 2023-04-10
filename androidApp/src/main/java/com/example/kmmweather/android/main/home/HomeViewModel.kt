@@ -28,13 +28,6 @@ class HomeViewModel(
     ) {
         viewModelScope.launch {
             val forecast = repository.getForecastForToday(latitude!!, longitude!!)
-            println("FORECAST NOW: $forecast")
-//            val address = geocoder
-//                .getFromLocation(latitude, longitude, 1)
-//                ?.get(0)
-//                ?.getAddressLine(0) ?: ""
-//            forecast.address = address
-//            repository.addForecast(forecast)
             forecast.collect {
                 it?.let { f -> state.emit(HomeViewState.Forecast(f)) }
             }

@@ -93,7 +93,7 @@ struct HomeView: View {
                             .font(.system(size: 36))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
-                        Text("Ciel clair")
+                        Text(viewModel.currentCityForecast.weatherDescription)
                             .font(.system(size: 21))
                             .fontWeight(.regular)
                             .foregroundColor(.white)
