@@ -6,9 +6,6 @@ import com.example.weather.local.AppSettings
 import com.example.weather.local.LocalWeatherSource
 import com.example.weather.local.buildDatabaseDriveFactory
 import com.example.weather.remote.RemoteWeatherSource
-import io.ktor.client.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

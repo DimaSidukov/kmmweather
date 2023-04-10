@@ -11,27 +11,34 @@ import shared
 extension HomeView {
     @MainActor class HomeViewModel: ObservableObject {
         
-        @Published var currentCityForecast = Forecast(
+        let weatherRepository = InjectionHelper().weatherRepository
+        
+        @Published var currentCityForecast = ForecastBody(
+            latitude: 0,
+            longitude: 0,
             address: "",
             dateTemperatureRange: "",
             currentHourTemperature: 0,
             weatherDescription: "",
-            dayTemperatureList: [KotlinInt(0)]
+            dayTemperatureString: ""
         )
         
-        func requestLocation(lat: Double, lon: Double) {
-            InjectionHelper().weatherRepository.getForecastForToday(latitude: lat, longitude: lon) { weather, error in
-                DispatchQueue.main.async {
-                    let hour = Calendar.current.component(.hour, from: Date())
-                    let tmpList = weather!.hourly.temperatureList
-                    self.currentCityForecast = Forecast(
-                        address: "Yoshkar-Ola",
-                        dateTemperatureRange: "TEST \(HelperKt.maxTemperature(list: tmpList)) \(HelperKt.minTemperature(list: tmpList))",
-                        currentHourTemperature: tmpList[hour].int32Value,
-                        weatherDescription: weather!.hourlyUnits.weatherCode,
-                        dayTemperatureList: HelperKt.doublesToInts(list: tmpList)
-                    )
+        lazy var vmCollector: Observer = {
+            let collector = Observer { value in
+                if let value = value as? ForecastBody {
+                    let data = value
+                    self.currentCityForecast = data
                 }
+            }
+            return collector
+        }()
+        
+        func requestLocation(lat: Double, lon: Double) {
+            DispatchQueue.main.async {
+                self.weatherRepository.getForecastForToday(latitude: lat, longitude: lon, completionHandler: { data, error in
+                    data?.collect(collector: self.vmCollector, completionHandler: { err in
+                    })
+                })
             }
         }
     }

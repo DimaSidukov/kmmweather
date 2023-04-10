@@ -26,19 +26,23 @@ struct HomeView: View {
     
     //tmp
     let locations = [
-        Forecast(
+        ForecastBody(
+            latitude: 0,
+            longitude: 0,
             address: "Jaipur",
             dateTemperatureRange: "",
             currentHourTemperature: 30,
             weatherDescription: "",
-            dayTemperatureList: []
+            dayTemperatureString: ""
         ),
-        Forecast(
+        ForecastBody(
+            latitude: 0,
+            longitude: 0,
             address: "Chennai",
             dateTemperatureRange: "",
             currentHourTemperature: 22,
             weatherDescription: "",
-            dayTemperatureList: []
+            dayTemperatureString: ""
         )
     ]
     
@@ -97,14 +101,14 @@ struct HomeView: View {
                 }.padding(EdgeInsets(top: 108, leading: 0, bottom: 90, trailing: 0))
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 0) {
-                        ForEach(0...locations.count - 1, id: \.self) { idx in
+                        ForEach(Array(locations.enumerated()), id: \.offset) { idx, location in
                             ZStack(alignment: .top) {
                                 if (idx % 2 == 0) {
                                     Image("bg_beach").cornerRadius(22)
                                 } else {
                                     Image("bg_mountains").cornerRadius(22)
                                 }
-                                let text = "\(locations[idx].address) \(locations[idx].currentHourTemperature)°C"
+                                let text = "\(location.address) \(location.currentHourTemperature)°C"
                                 Text(text)
                                     .font(.system(size: 19))
                                     .fontWeight(.semibold)
@@ -122,9 +126,9 @@ struct HomeView: View {
                 Spacer()
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 0) {
-                        ForEach(0...viewModel.currentCityForecast.dayTemperatureList.count - 1, id: \.self) { idx in
+                        ForEach(Array(viewModel.currentCityForecast.dayTemperatureList.enumerated()), id: \.offset) { idx, elem in
                             VStack(spacing: 0) {
-                                Text("\(viewModel.currentCityForecast.dayTemperatureList[idx])°C")
+                                Text("\(elem)°C")
                                     .padding(5)
                                     .background(Color.white)
                                     .clipShape(Capsule())
@@ -149,8 +153,8 @@ struct HomeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView()
+//    }
+//}

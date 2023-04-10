@@ -167,7 +167,7 @@ fun ForecastOverview(
             horizontalAlignment = Alignment.End
         ) {
             Text(
-                text = "${forecast?.currentHourTemperature}°C",
+                text = "${forecast?.currentHourTemperature ?: ""}°C",
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 36.sp

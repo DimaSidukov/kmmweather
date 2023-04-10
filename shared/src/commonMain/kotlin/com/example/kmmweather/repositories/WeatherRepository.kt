@@ -2,9 +2,14 @@ package com.example.kmmweather.repositories
 
 import com.example.kmmweather.entities.Forecast
 import com.example.kmmweather.utils.format
+import com.example.kmmweather.utils.wrapToAny
 import com.example.weather.body.ForecastBody
 import com.example.weather.local.LocalWeatherSource
 import com.example.weather.remote.RemoteWeatherSource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -15,21 +20,22 @@ class WeatherRepository(
     private val remoteSource: RemoteWeatherSource,
     private val localSource: LocalWeatherSource
 ) {
-    suspend fun addForecast(forecast: Forecast) {
-        println(forecast)
-        localSource.insertForecast(forecast)
+
+    suspend fun getForecastForToday(latitude: Double, longitude: Double): Flow<Forecast?> =
+        flow {
+            tryEmit(getLocalForecast(latitude, longitude))
+            tryEmit(getRemoteForecast(latitude, longitude))
+        }.wrapToAny()
+
+    private suspend fun <T> FlowCollector<T>.tryEmit(data: T) = try {
+        emit(data)
+    } catch (_: Throwable) {
+
     }
 
-    suspend fun getForecastForToday(latitude: Double, longitude: Double, isRemote: Boolean): Forecast? {
-        return if (isRemote) {
-            getRemoteForecast(latitude, longitude)
-        } else {
-            localSource.getForecast(latitude, longitude)
-        }
-    }
-
-    private suspend fun getRemoteForecast(latitude: Double, longitude: Double) : Forecast {
-        val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).format("d MMM yyyy EEE")
+    private suspend fun getRemoteForecast(latitude: Double, longitude: Double): Forecast {
+        val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+            .format("d MMM yyyy EEE")
         val currentHour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
         val weather = remoteSource.getWeatherForToday(latitude, longitude)
         val forecast = ForecastBody(
@@ -41,14 +47,19 @@ class WeatherRepository(
                     "${weather.hourly.temperatureList.max().roundToInt()}°C",
             currentHourTemperature = weather.hourly.temperatureList[currentHour].roundToInt(),
             weatherDescription = weather.hourly.weatherCodeList[currentHour].wmoToString(),
-            dayTemperatureString = weather.hourly.temperatureList.map { t -> t.roundToInt() }.joinToString(",")
+            dayTemperatureString = weather.hourly.temperatureList
+                .map { t -> t.roundToInt() }
+                .joinToString(",")
         )
-//        localSource.insertForecast(forecast)
+        delay(2000)
+        localSource.insertForecast(forecast)
         return forecast
     }
 
+    private suspend fun getLocalForecast(latitude: Double, longitude: Double) =
+        localSource.getForecast(latitude, longitude)
+
     companion object {
-        // temporary here, move out to repo
         fun Int?.wmoToString(): String = when (this) {
             0 -> "Clear sky"
             1, 2, 3 -> "Mainly clear, partly cloudy, and overcast"
