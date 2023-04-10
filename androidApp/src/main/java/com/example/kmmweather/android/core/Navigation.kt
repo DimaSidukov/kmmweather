@@ -1,5 +1,6 @@
 package com.example.kmmweather.android.core
 
+import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -20,10 +21,10 @@ sealed class BottomNavigationItem(val label: String, val icon: Int, val screenRo
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, scaffoldState: ScaffoldState) {
     NavHost(navController, startDestination = BottomNavigationItem.Home.screenRoute) {
         composable(BottomNavigationItem.Home.screenRoute) {
-            HomeScreen(getViewModel())
+            HomeScreen(getViewModel(), scaffoldState)
         }
         composable(BottomNavigationItem.Search.screenRoute) {
             SearchScreen()

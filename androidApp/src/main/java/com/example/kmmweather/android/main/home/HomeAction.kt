@@ -2,6 +2,6 @@ package com.example.kmmweather.android.main.home
 
 sealed class HomeAction {
 
-    object FetchForecast: HomeAction()
+    class FetchForecast(latitude: Double, longitude: Double) : HomeAction()
 
 }

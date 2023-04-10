@@ -3,10 +3,7 @@ package com.example.kmmweather.android.main
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,12 +24,14 @@ import com.example.kmmweather.android.unselectedNavigationItemColor
 fun MainScreen() {
 
     val navController = rememberNavController()
+    val scaffoldState = rememberScaffoldState()
     Scaffold(
+        scaffoldState = scaffoldState,
         bottomBar = {
             BottomNavigationBar(navController)
         }
     ) {
-        NavigationGraph(navController)
+        NavigationGraph(navController, scaffoldState)
     }
 }
 
@@ -41,16 +40,18 @@ fun BottomNavigationBar(navController: NavController) {
     val destinations = listOf(Home, Search, Location, Settings)
 
     BottomNavigation(
-        modifier = Modifier.windowInsetsPadding(
-            WindowInsets.systemBars.only(
-                WindowInsetsSides.Bottom
+        modifier = Modifier
+            .windowInsetsPadding(
+                WindowInsets.systemBars.only(
+                    WindowInsetsSides.Bottom
+                )
             )
-        ).clip(
-            RoundedCornerShape(
-                topStart = 10.dp,
-                topEnd = 10.dp
-            )
-        ),
+            .clip(
+                RoundedCornerShape(
+                    topStart = 10.dp,
+                    topEnd = 10.dp
+                )
+            ),
         backgroundColor = lightPurple,
         contentColor = Color.White
     ) {

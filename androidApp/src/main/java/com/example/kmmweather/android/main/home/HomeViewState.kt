@@ -6,7 +6,7 @@ sealed class HomeViewState {
 
     object NoData : HomeViewState()
 
-    object NoInternetConnection : HomeViewState()
+    class Error(val cause: String) : HomeViewState()
 
     object RequestLocation : HomeViewState()
 

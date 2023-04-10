@@ -13,6 +13,14 @@ struct HomeView: View {
     
     @ObservedObject private var viewModel = HomeViewModel()
     
+    private var isShowingError: Binding<Bool> {
+        Binding {
+            viewModel.errorMessage != nil
+        } set: { _ in
+            viewModel.errorMessage = nil
+        }
+    }
+    
     var bgColor = Color(
         red: 67 / 255,
         green: 16 / 255,
@@ -149,6 +157,8 @@ struct HomeView: View {
                 }
                 Spacer()
             }
+        }.alert(isPresented: isShowingError) {
+            return Alert(title: Text("An error occurred!"), message: Text(viewModel.errorMessage!))
         }
     }
 }

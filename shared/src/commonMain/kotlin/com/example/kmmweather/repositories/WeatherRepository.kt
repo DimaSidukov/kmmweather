@@ -5,6 +5,8 @@ import com.example.kmmweather.utils.Geocoder
 import com.example.kmmweather.utils.formatCurrentTime
 import com.example.kmmweather.utils.wrapToAny
 import com.example.weather.body.ForecastBody
+import com.example.weather.body.Result
+import com.example.weather.body.WeatherBody
 import com.example.weather.local.LocalWeatherSource
 import com.example.weather.remote.RemoteWeatherSource
 import kotlinx.coroutines.delay
@@ -22,11 +24,13 @@ class WeatherRepository(
     private val localSource: LocalWeatherSource
 ) {
 
-    suspend fun getForecastForToday(latitude: Double, longitude: Double): Flow<Forecast?> =
-        flow {
-            tryEmit(getLocalForecast(latitude, longitude))
-            tryEmit(getRemoteForecast(latitude, longitude))
-        }.wrapToAny()
+    suspend fun getForecastForToday(
+        latitude: Double,
+        longitude: Double
+    ): Flow<Result<Forecast>> = flow {
+        tryEmit(getLocalForecast(latitude, longitude))
+        tryEmit(getRemoteForecast(latitude, longitude))
+    }.wrapToAny()
 
     private suspend fun <T> FlowCollector<T>.tryEmit(data: T) = try {
         emit(data)
@@ -34,9 +38,17 @@ class WeatherRepository(
 
     }
 
-    private suspend fun getRemoteForecast(latitude: Double, longitude: Double): Forecast {
+    private suspend fun getRemoteForecast(
+        latitude: Double,
+        longitude: Double
+    ): Result<Forecast> {
         val currentHour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
-        val weather = remoteSource.getWeatherForToday(latitude, longitude)
+        val weather: WeatherBody?
+        try {
+            weather = remoteSource.getWeatherForToday(latitude, longitude)
+        } catch (e: Exception) {
+            return Result(null, e.message ?: "Error requesting data!")
+        }
         val forecast = ForecastBody(
             latitude = latitude,
             longitude = longitude,
@@ -52,11 +64,17 @@ class WeatherRepository(
         )
         delay(2000)
         localSource.insertForecast(forecast)
-        return forecast
+        return Result(forecast)
     }
 
-    private suspend fun getLocalForecast(latitude: Double, longitude: Double) =
-        localSource.getForecast(latitude, longitude)
+    private suspend fun getLocalForecast(latitude: Double, longitude: Double): Result<Forecast> {
+        val data = localSource.getForecast(latitude, longitude)
+        return com.example.weather.body.Result(
+            data = data,
+            error = if (data == null) "No cached data available!" else null
+        )
+    }
+
 
     companion object {
         fun Int?.wmoToString(): String = when (this) {

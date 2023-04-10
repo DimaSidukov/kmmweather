@@ -1,15 +1,11 @@
 package com.example.kmmweather.android.main.home
 
-import android.location.Geocoder
-import android.net.ConnectivityManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +13,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,18 +25,14 @@ import com.example.kmmweather.entities.Forecast
 import java.util.*
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
+fun HomeScreen(viewModel: HomeViewModel, scaffoldState: ScaffoldState) {
 
-    val connectivityManager = LocalContext.current.getSystemService(ConnectivityManager::class.java)
     val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-    val context = LocalContext.current
 
     val uiState = viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.requestData(
-            connectivityManager,
-            Geocoder(context, Locale.getDefault()),
             56.633331,
             47.866669
         )
@@ -51,12 +42,19 @@ fun HomeScreen(viewModel: HomeViewModel) {
         mutableStateOf<Forecast?>(null)
     }
 
-    when (uiState.value) {
-        is HomeViewState.Forecast -> {
-            forecast = (uiState.value as HomeViewState.Forecast).forecast
-        }
-        else -> {
+    LaunchedEffect(uiState.value) {
+        when (uiState.value) {
+            is HomeViewState.Forecast -> {
+                forecast = (uiState.value as HomeViewState.Forecast).forecast
+            }
+            is HomeViewState.Error -> {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = (uiState.value as HomeViewState.Error).cause,
+                )
+            }
+            else -> {
 
+            }
         }
     }
 
