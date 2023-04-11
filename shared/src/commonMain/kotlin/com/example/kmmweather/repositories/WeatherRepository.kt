@@ -69,12 +69,13 @@ class WeatherRepository(
 
     private suspend fun getLocalForecast(latitude: Double, longitude: Double): Result<Forecast> {
         val data = localSource.getForecast(latitude, longitude)
-        return com.example.weather.body.Result(
+        return Result(
             data = data,
             error = if (data == null) "No cached data available!" else null
         )
     }
 
+    suspend fun getCoordinates(address: String) = Geocoder.encodeLocation(address)
 
     companion object {
         fun Int?.wmoToString(): String = when (this) {

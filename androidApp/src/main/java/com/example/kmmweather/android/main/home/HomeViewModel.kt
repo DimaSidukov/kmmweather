@@ -11,7 +11,6 @@ class HomeViewModel(
     private val repository: WeatherRepository
 ) : ViewModel() {
 
-    val userAction = Channel<HomeAction>(Channel.UNLIMITED)
     var state = MutableStateFlow<HomeViewState>(HomeViewState.NoData)
         private set
 

@@ -25,17 +25,18 @@ import com.example.kmmweather.entities.Forecast
 import java.util.*
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel, scaffoldState: ScaffoldState) {
-
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    scaffoldState: ScaffoldState,
+    latitude: Double,
+    longitude: Double
+) {
     val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
 
     val uiState = viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.requestData(
-            56.633331,
-            47.866669
-        )
+        viewModel.requestData(latitude, longitude)
     }
 
     var forecast by remember {
@@ -52,7 +53,7 @@ fun HomeScreen(viewModel: HomeViewModel, scaffoldState: ScaffoldState) {
                     message = (uiState.value as HomeViewState.Error).cause,
                 )
             }
-            else -> {
+            is HomeViewState.NoData -> {
 
             }
         }
