@@ -66,8 +66,8 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavHostController) {
             onClick = {
                 scope.launch {
                     val coords = viewModel.getCoordinates(tfValue)
-                    navController.navigate("home/${coords.first}/${coords.second}") {
-                        popUpTo("home/${coords.first}/${coords.second}")
+                    navController.navigate("home/${coords.first}/${coords.second}/true") {
+                        popUpTo("home/${coords.first}/${coords.second}/true")
                     }
                 }
             }

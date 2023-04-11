@@ -72,7 +72,9 @@ fun BottomNavigationBar(navController: NavController) {
                 alwaysShowLabel = false,
                 selected = currentRoute == destination.screenRoute,
                 onClick = {
-                    navController.navigate(destination.screenRoute) {
+                    navController.navigate(
+                        if (destination == Home) "home/56.63333/47.866669/false" else destination.screenRoute
+                    ) {
                         navController.graph.startDestinationRoute?.let { screenRoute ->
                             popUpTo(screenRoute) {
                                 saveState = true

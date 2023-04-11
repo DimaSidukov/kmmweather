@@ -28,7 +28,11 @@ actual class Geocoder {
             suspendCancellableCoroutine { continuation ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     geocoder.getFromLocation(latitude, longitude, 1) {
-                        continuation.resume(it[0].getAddressLine(0), null)
+                        try {
+                            continuation.resume(it[0].locality, null)
+                        } catch (e: java.lang.NullPointerException) {
+                            continuation.resume("", null)
+                        }
                     }
                 } else {
                     continuation.resume(

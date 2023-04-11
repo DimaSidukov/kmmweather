@@ -15,3 +15,6 @@ VALUES(?, ?, ?, ?, ?, ?, ?);
 selectForecastByLocation:
 SELECT * FROM Forecast
 WHERE latitude = ? AND longitude = ?;
+
+selectAll:
+SELECT * FROM Forecast;

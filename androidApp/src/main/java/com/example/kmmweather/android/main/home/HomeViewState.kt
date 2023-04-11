@@ -11,4 +11,6 @@ sealed class HomeViewState: ViewState {
 
     class Forecast(val forecast: UiForecast) : HomeViewState()
 
+    class ForecastList(val forecastList: List<UiForecast>): HomeViewState()
+
 }

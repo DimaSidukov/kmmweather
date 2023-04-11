@@ -26,9 +26,10 @@ class WeatherRepository(
 
     suspend fun getForecastForToday(
         latitude: Double,
-        longitude: Double
+        longitude: Double,
+        forceRemote: Boolean,
     ): Flow<Result<Forecast>> = flow {
-        tryEmit(getLocalForecast(latitude, longitude))
+        if (!forceRemote) tryEmit(getLocalForecast(latitude, longitude))
         tryEmit(getRemoteForecast(latitude, longitude))
     }.wrapToAny()
 
@@ -62,7 +63,6 @@ class WeatherRepository(
                 .map { t -> t.roundToInt() }
                 .joinToString(",")
         )
-        delay(2000)
         localSource.insertForecast(forecast)
         return Result(forecast)
     }
@@ -74,6 +74,8 @@ class WeatherRepository(
             error = if (data == null) "No cached data available!" else null
         )
     }
+
+    suspend fun getForecastList() = localSource.getForecastList()
 
     suspend fun getCoordinates(address: String) = Geocoder.encodeLocation(address)
 

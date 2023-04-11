@@ -2,10 +2,14 @@ package com.example.kmmweather.android.main.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,18 +33,23 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     scaffoldState: ScaffoldState,
     latitude: Double,
-    longitude: Double
+    longitude: Double,
+    forceRemote: Boolean
 ) {
     val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
 
     val uiState = viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.requestData(latitude, longitude)
+        viewModel.requestData(latitude, longitude, forceRemote)
+        viewModel.requestLocationList()
     }
 
     var forecast by remember {
         mutableStateOf<Forecast?>(null)
+    }
+    var forecastList by remember {
+        mutableStateOf<List<Forecast>>(emptyList())
     }
 
     LaunchedEffect(uiState.value) {
@@ -53,6 +62,9 @@ fun HomeScreen(
                     message = (uiState.value as HomeViewState.Error).cause,
                 )
             }
+            is HomeViewState.ForecastList -> {
+                forecastList = (uiState.value as HomeViewState.ForecastList).forecastList
+            }
             is HomeViewState.NoData -> {
 
             }
@@ -64,7 +76,11 @@ fun HomeScreen(
         TopAppBar()
         ForecastOverview(
             forecast = forecast,
-            currentHour = currentHour
+            forecastList = forecastList,
+            currentHour = currentHour,
+            onItemClicked = {
+                viewModel.requestData(it.latitude, it.longitude, true)
+            }
         )
     }
 }
@@ -136,7 +152,9 @@ fun TopAppBar(
 @Composable
 fun ForecastOverview(
     forecast: Forecast?,
-    currentHour: Int
+    forecastList: List<Forecast>,
+    currentHour: Int,
+    onItemClicked: (Forecast) -> Unit
 ) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -149,7 +167,8 @@ fun ForecastOverview(
     ) {
         Column {
             Text(
-                text = "Yoshkar-Ola".uppercase(),
+                modifier = Modifier.fillMaxWidth(0.6f),
+                text = forecast?.address?.uppercase() ?: "",
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 28.sp,
@@ -191,12 +210,15 @@ fun ForecastOverview(
                 Spacer(modifier = Modifier.width(20.dp))
             }
             items(
-                count = 2
+                count = forecastList.size
             ) { idx ->
                 Box(
                     modifier = Modifier
                         .size(172.dp, 215.dp)
                         .clip(RoundedCornerShape(22.dp))
+                        .clickable {
+                            onItemClicked(forecastList[idx])
+                        }
                 ) {
                     Image(
                         painter = painterResource(
@@ -206,7 +228,7 @@ fun ForecastOverview(
                         contentDescription = null
                     )
                     Text(
-                        text = if (idx % 2 == 0) "Jaipur 30°C" else "Chennai 22°C",
+                        text = "${forecastList[idx].address} ${forecastList[idx].currentHourTemperature}°C",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White,

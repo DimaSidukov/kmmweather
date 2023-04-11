@@ -38,4 +38,19 @@ class LocalWeatherSource(databaseDriverFactory: DatabaseDriverFactory) : Databas
             null
         }
     }
+
+    override suspend fun getForecastList(): List<Forecast> = dbQuery
+        .selectAll()
+        .executeAsList()
+        .map { forecastQuery ->
+            ForecastBody(
+                forecastQuery.latitude,
+                forecastQuery.longitude,
+                forecastQuery.address,
+                forecastQuery.dateTemperatureRange,
+                forecastQuery.currentHourTemperature,
+                forecastQuery.weatherDescription,
+                forecastQuery.dayTemperatureString
+            )
+        }
 }
