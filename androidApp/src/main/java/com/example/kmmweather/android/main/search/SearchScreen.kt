@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 fun SearchScreen(viewModel: SearchViewModel, navController: NavHostController) {
 
     var tfValue: String by remember { mutableStateOf("") }
-    var scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier

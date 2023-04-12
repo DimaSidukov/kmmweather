@@ -27,7 +27,6 @@ class HomeViewModel(
                 )
             }
         }
-
     }
 
     fun requestLocationList() = viewModelScope.launch {

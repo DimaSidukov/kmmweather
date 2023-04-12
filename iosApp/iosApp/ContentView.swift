@@ -33,7 +33,7 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(lat: 56.633331, lon: 47.866669, forceRemote: false)
                 .tabItem {
                     Image(systemName: "house.fill")
                 }

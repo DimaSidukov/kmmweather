@@ -24,6 +24,7 @@ extension HomeView {
             weatherDescription: "",
             dayTemperatureString: ""
         )
+        @Published var locationList = [Forecast]()
         @Published var errorMessage: String? = nil
         
         lazy var vmCollector: Observer = {
@@ -37,14 +38,24 @@ extension HomeView {
             return collector
         }()
         
-        func requestLocation(lat: Double, lon: Double) {
+        func requestLocation(lat: Double, lon: Double, forceRemote: Bool) {
             DispatchQueue.main.async {
-                self.weatherRepository.getForecastForToday(latitude: lat, longitude: lon, completionHandler: { data, error in
+                self.weatherRepository.getForecastForToday(latitude: lat, longitude: lon, forceRemote: forceRemote, completionHandler: { data, error in
                     data?.collect(collector: self.vmCollector, completionHandler: { err in
                         if (err != nil) {
                             self.errorMessage = err?.localizedDescription
                         }
                     })
+                })
+            }
+        }
+        
+        func requestLocationList() {
+            DispatchQueue.main.async {
+                self.weatherRepository.getForecastList(completionHandler: { data, error in
+                    if (data != nil) {
+                        self.locationList = data!
+                    }
                 })
             }
         }
