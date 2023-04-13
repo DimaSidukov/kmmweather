@@ -39,114 +39,112 @@ struct HomeView: View {
 
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                VStack(spacing: 0) {
-                    Image("bg_night")
-                        .resizable()
-                        .scaledToFit()
-                    bgColor.padding(.top, -10)
-                }.edgesIgnoringSafeArea(.all)
-                VStack(alignment: .leading) {
-                    HStack(alignment: .center) {
-                        Button { } label: {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .padding(.leading, 20)
-                                .foregroundColor(.white)
-                        }
-                        Spacer()
-                        Button { } label: {
-                            Image(systemName: "line.3.horizontal")
-                                .resizable()
-                                .frame(width: 26.5, height: 22.1)
-                                .padding(.trailing, 20)
-                                .foregroundColor(.white)
-                        }
-                    }.padding(.top, 30)
-                    HStack(alignment: .center) {
-                        VStack(alignment: .leading) {
-                            Text(viewModel.currentCityForecast.address.uppercased())
-                                .font(.system(size: 28))
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                            Text(viewModel.currentCityForecast.dateTemperatureRange)
-                                .font(.system(size: 13))
-                                .fontWeight(.regular)
-                                .foregroundColor(.white)
-                        }.padding(.leading, 20)
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                            Text("\(viewModel.currentCityForecast.currentHourTemperature)°C")
-                                .font(.system(size: 36))
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                            Text(viewModel.currentCityForecast.weatherDescription)
-                                .font(.system(size: 21))
-                                .fontWeight(.regular)
-                                .foregroundColor(.white)
-                        }.padding(.trailing, 20)
-                    }.padding(EdgeInsets(top: 108, leading: 0, bottom: 90, trailing: 0))
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 0) {
-                            ForEach(Array(viewModel.locationList.enumerated()), id: \.offset) { idx, location in
-                                ZStack(alignment: .top) {
-                                    if (idx % 2 == 0) {
-                                        Image("bg_beach").cornerRadius(22)
-                                    } else {
-                                        Image("bg_mountains").cornerRadius(22)
-                                    }
-                                    let text = "\(location.address) \(location.currentHourTemperature)°C"
-                                    Text(text)
-                                        .font(.system(size: 19))
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.white)
-                                        .padding(.top, 24)
-                                }.padding(.horizontal, 20)
-                            }
-                        }
-                    }.frame(width: .infinity, height: 220)
-                    Text("Today")
-                        .font(.system(size: 20))
-                        .fontWeight(.medium)
-                        .foregroundColor(.white)
-                        .padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20))
-                    Spacer()
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 0) {
-                            ForEach(Array(viewModel.currentCityForecast.dayTemperatureList.enumerated()), id: \.offset) { idx, elem in
-                                VStack(spacing: 0) {
-                                    Text("\(elem)°C")
-                                        .padding(5)
-                                        .background(Color.white)
-                                        .clipShape(Capsule())
-                                        .padding(.top, 10)
-                                    let text = "\(idx):00"
-                                    Text(text)
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 15))
-                                        .foregroundColor(.white)
-                                        .padding(.vertical, 10)
-                                }
-                                .frame(width: 80, height: 80)
-                                .background(itemBgColor)
-                                .cornerRadius(16)
-                                .padding(EdgeInsets(top: 0, leading: 20, bottom: 14, trailing: 14))
-                            }
-                        }
+        ZStack {
+            VStack(spacing: 0) {
+                Image("bg_night")
+                    .resizable()
+                    .scaledToFit()
+                bgColor.padding(.top, -10)
+            }.edgesIgnoringSafeArea(.all)
+            VStack(alignment: .leading) {
+                HStack(alignment: .center) {
+                    Button { } label: {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .padding(.leading, 20)
+                            .foregroundColor(.white)
                     }
                     Spacer()
+                    Button { } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .resizable()
+                            .frame(width: 26.5, height: 22.1)
+                            .padding(.trailing, 20)
+                            .foregroundColor(.white)
+                    }
+                }.padding(.top, 30)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading) {
+                        Text(viewModel.currentCityForecast.address.uppercased())
+                            .font(.system(size: 28))
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                        Text(viewModel.currentCityForecast.dateTemperatureRange)
+                            .font(.system(size: 13))
+                            .fontWeight(.regular)
+                            .foregroundColor(.white)
+                    }.padding(.leading, 20)
+                    Spacer()
+                    VStack(alignment: .trailing) {
+                        Text("\(viewModel.currentCityForecast.currentHourTemperature)°C")
+                            .font(.system(size: 36))
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                        Text(viewModel.currentCityForecast.weatherDescription)
+                            .font(.system(size: 21))
+                            .fontWeight(.regular)
+                            .foregroundColor(.white)
+                    }.padding(.trailing, 20)
+                }.padding(EdgeInsets(top: 78, leading: 0, bottom: 70, trailing: 0))
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(Array(viewModel.locationList.enumerated()), id: \.offset) { idx, location in
+                            ZStack(alignment: .top) {
+                                if (idx % 2 == 0) {
+                                    Image("bg_beach").cornerRadius(22)
+                                } else {
+                                    Image("bg_mountains").cornerRadius(22)
+                                }
+                                let text = "\(location.address) \(location.currentHourTemperature)°C"
+                                Text(text)
+                                    .font(.system(size: 19))
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.white)
+                                    .padding(.top, 24)
+                            }.padding(.horizontal, 20)
+                        }
+                    }
+                }.frame(width: .infinity, height: 220)
+                Text("Today")
+                    .font(.system(size: 20))
+                    .fontWeight(.medium)
+                    .foregroundColor(.white)
+                    .padding(EdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20))
+                Spacer()
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(Array(viewModel.currentCityForecast.dayTemperatureList.enumerated()), id: \.offset) { idx, elem in
+                            VStack(spacing: 0) {
+                                Text("\(elem)°C")
+                                    .padding(5)
+                                    .background(Color.white)
+                                    .clipShape(Capsule())
+                                    .padding(.top, 10)
+                                let text = "\(idx):00"
+                                Text(text)
+                                    .fontWeight(.semibold)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 10)
+                            }
+                            .frame(width: 80, height: 80)
+                            .background(itemBgColor)
+                            .cornerRadius(16)
+                            .padding(EdgeInsets(top: 0, leading: 20, bottom: 14, trailing: 14))
+                        }
+                    }
                 }
-            }.alert(isPresented: isShowingError) {
-                return Alert(title: Text("An error occurred!"), message: Text(viewModel.errorMessage!))
+                Spacer()
             }
+        }.alert(isPresented: isShowingError) {
+            return Alert(title: Text("An error occurred!"), message: Text(viewModel.errorMessage!))
         }
     }
 }
 
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView()
-//    }
-//}
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView(lat: 23.3, lon: 23.3, forceRemote: true)
+    }
+}

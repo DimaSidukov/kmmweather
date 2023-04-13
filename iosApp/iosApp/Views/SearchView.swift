@@ -19,10 +19,11 @@ struct SearchView: View {
     )
     
     @State private var text = ""
-    @State var isPresenting = false
     
-    @State var longitude: Double = 0
-    @State var latitude: Double = 0
+    @Binding var tabSelection: Int
+    @Binding var latitude: Double
+    @Binding var longitude: Double
+    @Binding var forceRemote: Bool
     
     var body: some View {
         
@@ -44,9 +45,10 @@ struct SearchView: View {
                     }
                         Button(action: {
                             viewModel.getCoordinates(address: self.text) { lat, lon in
-                                self.longitude = lon
-                                self.latitude = lat
-                                self.isPresenting = true
+                                longitude = lon
+                                latitude = lat
+                                forceRemote = true
+                                tabSelection = 1
                             }
                         }) {
                             Text("Apply")
@@ -57,19 +59,14 @@ struct SearchView: View {
                         }.foregroundColor(.white)
                             .cornerRadius(10)
                             .padding(.top, 20)
-                    NavigationLink(
-                        destination: HomeView(lat: latitude, lon: longitude, forceRemote: true), isActive: $isPresenting
-                    ) {
-                        EmptyView()
-                    }
                 }
             }.edgesIgnoringSafeArea(.all)
         }
     }
 }
 
-struct SearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchView()
-    }
-}
+//struct SearchView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SearchView()
+//    }
+//}

@@ -16,6 +16,11 @@ struct BlueView: View {
 
 struct ContentView: View {
     
+    @State private var tabSelection = 1
+    @State private var latitude = 56.633331
+    @State private var longitude = 47.866669
+    @State private var forceRemote = false
+    
     init() {
         UITabBar.appearance().backgroundColor = UIColor(
             red: 127 / 255,
@@ -32,23 +37,29 @@ struct ContentView: View {
     }
     
     var body: some View {
-        TabView {
-            HomeView(lat: 56.633331, lon: 47.866669, forceRemote: false)
-                .tabItem {
+        TabView(selection: $tabSelection) {
+            NavigationView {
+                HomeView(lat: latitude, lon: longitude, forceRemote: forceRemote)
+            }.tabItem {
                     Image(systemName: "house.fill")
                 }
-            SearchView()
-                .tabItem {
-                    Image(systemName: "magnifyingglass")
-                }
+            .tag(1)
+            NavigationView {
+                SearchView(tabSelection: $tabSelection, latitude: $latitude, longitude: $longitude, forceRemote: $forceRemote)
+            }.tabItem {
+                Image(systemName: "magnifyingglass")
+            }
+            .tag(2)
             LocationView()
                 .tabItem {
                     Image(systemName: "safari")
                 }
+                .tag(3)
             SettingsView()
                 .tabItem {
                     Image(systemName: "gearshape")
                 }
+                .tag(4)
         }
         .accentColor(.white)
     }
