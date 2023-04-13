@@ -90,19 +90,23 @@ struct HomeView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 0) {
                         ForEach(Array(viewModel.locationList.enumerated()), id: \.offset) { idx, location in
-                            ZStack(alignment: .top) {
-                                if (idx % 2 == 0) {
-                                    Image("bg_beach").cornerRadius(22)
-                                } else {
-                                    Image("bg_mountains").cornerRadius(22)
-                                }
-                                let text = "\(location.address) \(location.currentHourTemperature)°C"
-                                Text(text)
-                                    .font(.system(size: 19))
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.white)
-                                    .padding(.top, 24)
-                            }.padding(.horizontal, 20)
+                            Button(action: {
+                                viewModel.requestLocation(lat: location.latitude, lon: location.longitude, forceRemote: true)
+                            }) {
+                                ZStack(alignment: .top) {
+                                    if (idx % 2 == 0) {
+                                        Image("bg_beach").cornerRadius(22)
+                                    } else {
+                                        Image("bg_mountains").cornerRadius(22)
+                                    }
+                                    let text = "\(location.address) \(location.currentHourTemperature)°C"
+                                    Text(text)
+                                        .font(.system(size: 19))
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.white)
+                                        .padding(.top, 24)
+                                }.padding(.horizontal, 20)
+                            }
                         }
                     }
                 }.frame(width: .infinity, height: 220)
