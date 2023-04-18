@@ -15,11 +15,19 @@ actual class Geocoder {
         @OptIn(ExperimentalCoroutinesApi::class)
         actual suspend fun encodeLocation(address: String): Pair<Double, Double> =
             suspendCancellableCoroutine { continuation ->
-                geocoder.getFromLocationName(
-                    address,
-                    1
-                ) {
-                    continuation.resume(Pair(it[0].latitude, it[0].longitude), null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocationName(
+                        address,
+                        1
+                    ) {
+                        continuation.resume(Pair(it[0].latitude, it[0].longitude), null)
+                    }
+                } else {
+                    geocoder.getFromLocationName(address, 1).let { list ->
+                        list?.let {
+                            continuation.resume(Pair(it[0].latitude, it[0].longitude), null)
+                        }
+                    }
                 }
             }
 
@@ -30,7 +38,7 @@ actual class Geocoder {
                     geocoder.getFromLocation(latitude, longitude, 1) {
                         try {
                             continuation.resume(it[0].locality, null)
-                        } catch (e: java.lang.NullPointerException) {
+                        } catch (e: NullPointerException) {
                             continuation.resume("", null)
                         }
                     }

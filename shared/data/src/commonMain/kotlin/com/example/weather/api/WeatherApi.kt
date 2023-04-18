@@ -4,10 +4,6 @@ import com.example.weather.body.WeatherBody
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.serialization.*
-import kotlin.coroutines.cancellation.CancellationException
 
 class WeatherApi(private val httpClient: HttpClient) {
 
